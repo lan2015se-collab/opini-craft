@@ -14,7 +14,97 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      form_questions: {
+        Row: {
+          created_at: string
+          form_id: string
+          id: string
+          label: string
+          options: Json
+          position: number
+          qtype: string
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          id?: string
+          label: string
+          options?: Json
+          position?: number
+          qtype: string
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          id?: string
+          label?: string
+          options?: Json
+          position?: number
+          qtype?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_questions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_responses: {
+        Row: {
+          answers: Json
+          created_at: string
+          form_id: string
+          id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          form_id: string
+          id?: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          form_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_responses_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forms: {
+        Row: {
+          completion_message: string
+          created_at: string
+          id: string
+          owner_id: string
+          title: string
+        }
+        Insert: {
+          completion_message?: string
+          created_at?: string
+          id: string
+          owner_id: string
+          title?: string
+        }
+        Update: {
+          completion_message?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
