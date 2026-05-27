@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FormsIdRouteImport } from './routes/forms.$id'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
 
 const DashboardRoute = DashboardRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormsIdRoute = FormsIdRouteImport.update({
+  id: '/forms/$id',
+  path: '/forms/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardNewRoute = DashboardNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -33,29 +39,33 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
+  '/forms/$id': typeof FormsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
+  '/forms/$id': typeof FormsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
+  '/forms/$id': typeof FormsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/dashboard/new'
+  fullPaths: '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/dashboard/new'
-  id: '__root__' | '/' | '/dashboard' | '/dashboard/new'
+  to: '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
+  id: '__root__' | '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  FormsIdRoute: typeof FormsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -72,6 +82,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forms/$id': {
+      id: '/forms/$id'
+      path: '/forms/$id'
+      fullPath: '/forms/$id'
+      preLoaderRoute: typeof FormsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/new': {
@@ -99,6 +116,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  FormsIdRoute: FormsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
