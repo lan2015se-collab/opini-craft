@@ -63,7 +63,7 @@ function FillForm() {
       }
     }
     setSubmitting(true);
-    const { error } = await supabase.from("form_responses").insert({ form_id: id, answers: built });
+    const { error } = await supabase.from("form_responses").insert({ form_id: id, answers: built as never });
     setSubmitting(false);
     if (error) return toast.error(error.message);
     setSubmitted(true);
