@@ -13,6 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FormsIdRouteImport } from './routes/forms.$id'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
+import { Route as ChatRidRouteImport } from './routes/chat.$rid'
 import { Route as DashboardEditIdRouteImport } from './routes/dashboard.edit.$id'
 
 const DashboardRoute = DashboardRouteImport.update({
@@ -35,6 +36,11 @@ const DashboardNewRoute = DashboardNewRouteImport.update({
   path: '/new',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ChatRidRoute = ChatRidRouteImport.update({
+  id: '/chat/$rid',
+  path: '/chat/$rid',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardEditIdRoute = DashboardEditIdRouteImport.update({
   id: '/edit/$id',
   path: '/edit/$id',
@@ -44,6 +50,7 @@ const DashboardEditIdRoute = DashboardEditIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
     | '/dashboard/edit/$id'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
     | '/dashboard/edit/$id'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
     | '/dashboard/edit/$id'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  ChatRidRoute: typeof ChatRidRoute
   FormsIdRoute: typeof FormsIdRoute
 }
 
@@ -123,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNewRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/chat/$rid': {
+      id: '/chat/$rid'
+      path: '/chat/$rid'
+      fullPath: '/chat/$rid'
+      preLoaderRoute: typeof ChatRidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/edit/$id': {
       id: '/dashboard/edit/$id'
       path: '/edit/$id'
@@ -150,6 +170,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  ChatRidRoute: ChatRidRoute,
   FormsIdRoute: FormsIdRoute,
 }
 export const routeTree = rootRouteImport
