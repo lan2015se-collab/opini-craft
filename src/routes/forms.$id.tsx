@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
+import { buildAnswerText } from "@/lib/qtypes";
 
 export const Route = createFileRoute("/forms/$id")({
   head: () => ({ meta: [{ title: "表單 — OpiniCraft" }] }),
@@ -14,20 +16,22 @@ export const Route = createFileRoute("/forms/$id")({
 });
 
 type Q = { id: string; label: string; qtype: string; options: string[]; position: number };
-type Form = { id: string; title: string; completion_message: string };
+type Form = { id: string; title: string; completion_message: string; auto_reply: string };
 
 function FillForm() {
   const { id } = Route.useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState<Form | null>(null);
   const [questions, setQuestions] = useState<Q[]>([]);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [responseId, setResponseId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data: f } = await supabase.from("forms").select("id,title,completion_message").eq("id", id).maybeSingle();
+      const { data: f } = await supabase.from("forms").select("id,title,completion_message,auto_reply").eq("id", id).maybeSingle();
       if (!f) { setLoading(false); return; }
       setForm(f as Form);
       const { data: qs } = await supabase.from("form_questions").select("*").eq("form_id", id).order("position");
@@ -48,6 +52,7 @@ function FillForm() {
   };
 
   const submit = async () => {
+    if (!form) return;
     const built: Record<string, unknown> = {};
     for (const q of questions) {
       const v = answers[q.id];
@@ -63,21 +68,43 @@ function FillForm() {
       }
     }
     setSubmitting(true);
-    const { error } = await supabase.from("form_responses").insert({ form_id: id, answers: built as never });
-    setSubmitting(false);
-    if (error) return toast.error(error.message);
+    const { data: resp, error } = await supabase
+      .from("form_responses")
+      .insert({ form_id: id, answers: built as never })
+      .select("id")
+      .single();
+    if (error || !resp) { toast.error(error?.message ?? "送出失敗"); setSubmitting(false); return; }
+
+    // seed chat: filler sends the formatted answers, then owner auto-reply
+    const fillerMsg = buildAnswerText(questions, built);
+    await supabase.from("chat_messages").insert({
+      response_id: resp.id, form_id: id, sender: "filler", body: fillerMsg,
+    });
+    if (form.auto_reply?.trim()) {
+      await supabase.from("chat_messages").insert({
+        response_id: resp.id, form_id: id, sender: "owner", body: form.auto_reply.trim(),
+      });
+    }
+    setResponseId(resp.id);
     setSubmitted(true);
+    setSubmitting(false);
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">載入中…</div>;
   if (!form) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">找不到此表單</div>;
 
-  if (submitted) {
+  if (submitted && responseId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-md rounded-2xl border bg-card p-8 text-center shadow-sm">
           <div className="whitespace-pre-wrap text-lg">{form.completion_message}</div>
-          <Button className="mt-6 w-full" onClick={() => window.location.reload()}>再次填寫</Button>
+          <Button
+            className="mt-6 w-full"
+            size="lg"
+            onClick={() => navigate({ to: "/chat/$rid", params: { rid: responseId } })}
+          >
+            <MessageCircle className="size-4" /> 私訊
+          </Button>
         </div>
       </div>
     );
