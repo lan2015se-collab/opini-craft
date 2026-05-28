@@ -13,6 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FormsIdRouteImport } from './routes/forms.$id'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
+import { Route as DashboardEditIdRouteImport } from './routes/dashboard.edit.$id'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -34,18 +35,25 @@ const DashboardNewRoute = DashboardNewRouteImport.update({
   path: '/new',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardEditIdRoute = DashboardEditIdRouteImport.update({
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/dashboard/new'
+    | '/forms/$id'
+    | '/dashboard/edit/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
-  id: '__root__' | '/' | '/dashboard' | '/dashboard/new' | '/forms/$id'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/dashboard/new'
+    | '/forms/$id'
+    | '/dashboard/edit/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/dashboard/new'
+    | '/forms/$id'
+    | '/dashboard/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -98,15 +123,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNewRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/edit/$id': {
+      id: '/dashboard/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/dashboard/edit/$id'
+      preLoaderRoute: typeof DashboardEditIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardNewRoute: typeof DashboardNewRoute
+  DashboardEditIdRoute: typeof DashboardEditIdRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardNewRoute: DashboardNewRoute,
+  DashboardEditIdRoute: DashboardEditIdRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
