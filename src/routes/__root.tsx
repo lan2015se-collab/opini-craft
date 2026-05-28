@@ -80,6 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "OpiniCraft" },
+      { name: "twitter:description", content: "為 Threads 與 Instagram 設計的私訊表單" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/89f216a4-0f2f-489e-8c72-2475d3bb2d94/id-preview-2d6965c3--39e0f3fe-a7b3-467a-bcaa-be3a3310c8f5.lovable.app-1779968503030.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/89f216a4-0f2f-489e-8c72-2475d3bb2d94/id-preview-2d6965c3--39e0f3fe-a7b3-467a-bcaa-be3a3310c8f5.lovable.app-1779968503030.png" },
     ],
     links: [
       {
