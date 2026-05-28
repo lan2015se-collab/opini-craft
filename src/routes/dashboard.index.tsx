@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Copy, Plus, LogOut, Inbox, Trash2, Pencil, ExternalLink, MessageCircle } from "lucide-react";
 import { buildAnswerText } from "@/lib/qtypes";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/dashboard/")({
   head: () => ({ meta: [{ title: "儀表盤 — OpiniCraft" }] }),
   component: Dashboard,
 });

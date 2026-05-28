@@ -9,21 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as FormsIdRouteImport } from './routes/forms.$id'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
 import { Route as ChatRidRouteImport } from './routes/chat.$rid'
 import { Route as DashboardEditIdRouteImport } from './routes/dashboard.edit.$id'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormsIdRoute = FormsIdRouteImport.update({
@@ -49,77 +49,77 @@ const DashboardEditIdRoute = DashboardEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/chat/$rid': typeof ChatRidRoute
   '/dashboard/new': typeof DashboardNewRoute
   '/forms/$id': typeof FormsIdRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/edit/$id': typeof DashboardEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
+    | '/dashboard/'
     | '/dashboard/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
+    | '/dashboard'
     | '/dashboard/edit/$id'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
     | '/chat/$rid'
     | '/dashboard/new'
     | '/forms/$id'
+    | '/dashboard/'
     | '/dashboard/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
   ChatRidRoute: typeof ChatRidRoute
   FormsIdRoute: typeof FormsIdRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forms/$id': {
@@ -153,25 +153,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface DashboardRouteChildren {
-  DashboardNewRoute: typeof DashboardNewRoute
-  DashboardEditIdRoute: typeof DashboardEditIdRoute
-}
-
-const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardNewRoute: DashboardNewRoute,
-  DashboardEditIdRoute: DashboardEditIdRoute,
-}
-
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRouteWithChildren,
   ChatRidRoute: ChatRidRoute,
   FormsIdRoute: FormsIdRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
