@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          body: string
+          created_at: string
+          form_id: string
+          id: string
+          response_id: string
+          sender: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          form_id: string
+          id?: string
+          response_id: string
+          sender: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          form_id?: string
+          id?: string
+          response_id?: string
+          sender?: string
+        }
+        Relationships: []
+      }
       form_questions: {
         Row: {
           created_at: string
@@ -83,6 +110,7 @@ export type Database = {
       }
       forms: {
         Row: {
+          auto_reply: string
           completion_message: string
           created_at: string
           id: string
@@ -90,6 +118,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          auto_reply?: string
           completion_message?: string
           created_at?: string
           id: string
@@ -97,6 +126,7 @@ export type Database = {
           title?: string
         }
         Update: {
+          auto_reply?: string
           completion_message?: string
           created_at?: string
           id?: string
